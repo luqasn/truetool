@@ -27,7 +27,8 @@ if [[ $selection == "1" ]]; then
     done
     data_name=$(echo "$pvc" | awk '{print $3}')
     volume_name=$(echo "$pvc" | awk '{print $4}')
-    full_path=$(zfs list | grep "$volume_name" | awk '{print $1}')
+    pool=$(cli -m csv -c 'app kubernetes config' | awk -F ',' 'NR==2 {print $13}')
+    full_path=$(zfs list -r "$pool" | grep "$volume_name" | awk '{print $1}')
     echo -e "\nMounting\n$full_path\nTo\n/mnt/truetool/$data_name" && zfs set mountpoint="/truetool/$data_name" "$full_path" && echo -e "Mounted, Use the Unmount All option to unmount\n"
     exit
 elif [[ $selection == "2" ]]; then
